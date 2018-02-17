@@ -11,6 +11,8 @@ import android.view.View
 import android.widget.*
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.Scope
+import com.google.api.services.drive.Drive
 import java.util.*
 import android.support.v4.view.ViewCompat.setAlpha
 import android.support.v4.view.ViewCompat.animate
@@ -22,7 +24,7 @@ const val CHANNEL_NAME = "nate channel"
 const val CHANNEL_IMPORTANCE = NotificationManager.IMPORTANCE_HIGH
 
 const val NEW_NOTE_RESULT_CODE = 1
-const val GOOGLE_AUTH_RESULT_CODE = 1
+const val GOOGLE_AUTH_RESULT_CODE = 2
 
 class MainActivity : AppCompatActivity() {
     private lateinit var notesListView : ListView
@@ -55,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         notesListView.adapter = listAdapter
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
+                .requestScopes(Scope("https://www.googleapis.com/auth/drive.appfolder"))
                 .build()
 
         val googleSignInClient = GoogleSignIn.getClient(this, gso)
