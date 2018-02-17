@@ -10,9 +10,22 @@
         android:id="@+id/notes_list"
         android:layout_width="368dp"
         android:layout_height="431dp"
+        android:foregroundGravity="top"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_note"
         app:layout_constraintVertical_bias="0.737" />
+
+    <Button
+        android:id="@+id/add_note"
+        android:layout_width="347dp"
+        android:layout_height="wrap_content"
+        android:text="Add a note"
+        app:layout_constraintBottom_toTopOf="@+id/notes_list"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>

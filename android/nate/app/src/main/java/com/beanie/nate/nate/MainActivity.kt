@@ -10,10 +10,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.NotificationCompat
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.ListAdapter
-import android.widget.ListView
+import android.widget.*
 
 const val CHANNEL_ID = "my_channel_01"
 const val CHANNEL_NAME = "nate channel"
@@ -21,6 +18,7 @@ const val CHANNEL_IMPORTANCE = NotificationManager.IMPORTANCE_HIGH
 
 class MainActivity : AppCompatActivity() {
     private lateinit var notesListView : ListView
+    private lateinit var addNoteButton : Button
     private lateinit var notificationChannel : NotificationChannel
     private lateinit var notificationManager : NotificationManager
 
@@ -33,6 +31,12 @@ class MainActivity : AppCompatActivity() {
         notesListView = findViewById(R.id.notes_list)
         localNotes.add("Example Note 1")
         localNotes.add("Example Note 2")
+
+        addNoteButton = findViewById(R.id.add_note)
+        addNoteButton.setOnClickListener { view ->
+            val intent = Intent(this, NewNoteActivity::class.java)
+            startActivity(intent)
+        }
 
         notificationChannel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, CHANNEL_IMPORTANCE)
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
