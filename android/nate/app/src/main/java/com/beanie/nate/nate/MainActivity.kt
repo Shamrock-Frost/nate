@@ -43,15 +43,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var driveClient : DriveClient
     private lateinit var driveResourceClient : DriveResourceClient
 
-    private val localNotes = mutableListOf<String>()
+    private val localNotes = mutableListOf<Note>()
 
     override fun onCreate(savedInstanceState : Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         notesListView = findViewById(R.id.notes_list)
-        localNotes.add("Example Note 1")
-        localNotes.add("Example Note 2")
 
         addNoteButton = findViewById(R.id.add_note)
         addNoteButton.setOnClickListener { view ->
@@ -63,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(notificationChannel)
 
-        listAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, localNotes)
+        listAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, localNotes.map { it.body })
         notesListView.adapter = listAdapter
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -82,6 +80,8 @@ class MainActivity : AppCompatActivity() {
                         listAdapter.notifyDataSetChanged()
                         view.alpha = 1.0F
                     }
+
+            syncDrive()
         }
     }
 
@@ -89,7 +89,8 @@ class MainActivity : AppCompatActivity() {
         when(requestCode) {
             NEW_NOTE_RESULT_CODE ->
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    localNotes.add(data.dataString)
+                    localNotes.add(Note("", data.dataString))
+                    syncDrive()
                     listAdapter.notifyDataSetChanged()
                 }
             GOOGLE_AUTH_RESULT_CODE -> {
@@ -97,24 +98,28 @@ class MainActivity : AppCompatActivity() {
                         .getResult(ApiException::class.java)
                 driveClient = Drive.getDriveClient(this, account)
                 driveResourceClient = Drive.getDriveResourceClient(this, account)
-                val appFolderTask = driveResourceClient.appFolder
-                val createContentsTask = driveResourceClient.createContents()
-                Tasks.whenAll(appFolderTask, createContentsTask).continueWithTask {
+                driveResourceClient.appFolder.continueWithTask { appFolderTask ->
                     val appFolder = appFolderTask.result
                     val query = Query.Builder()
                             .addFilter(Filters.eq(SearchableField.TITLE, "notes.json"))
                             .build()
-                    val changeSet = MetadataChangeSet.Builder()
-                            .setTitle("notes.json")
-                            .setMimeType("application/json")
-                            .build()
-                    val contents = createContentsTask.result
-                    OutputStreamWriter(contents.outputStream).use { writer ->
-                        writer.write("[]")
-                    }
                     driveResourceClient.queryChildren(appFolder, query).continueWith { metaDatasT ->
                         if(metaDatasT.result.count == 0) {
-                            driveResourceClient.createFile(appFolder, changeSet, contents)
+                            val changeSet = MetadataChangeSet.Builder()
+                                    .setTitle("notes.json")
+                                    .setMimeType("application/json")
+                                    .build()
+                            driveResourceClient.createContents().continueWithTask {
+                                val contents = it.result
+                                OutputStreamWriter(contents.outputStream).use { writer ->
+                                    writer.write("[]")
+                                }
+                                driveResourceClient.createFile(appFolder, changeSet, contents)
+                            }
+                        } else {
+                            getAllNotes().addOnCompleteListener {
+                                listAdapter.addAll(it.result.map { it.body })
+                            }
                         }
                     }
                 }
@@ -150,6 +155,23 @@ class MainActivity : AppCompatActivity() {
                         }
                         noteList as List<Note>
                     }
+        }
+    }
+
+    private fun syncDrive() = driveResourceClient.appFolder.continueWithTask { appFolderTask ->
+        val appFolder = appFolderTask.result
+        val query = Query.Builder()
+                .addFilter(Filters.eq(SearchableField.TITLE, "notes.json"))
+                .build()
+        driveResourceClient.queryChildren(appFolder, query).continueWith { metaDatasT ->
+            val metaData = metaDatasT.result.single()
+            driveResourceClient.openFile(metaData.driveId.asDriveFile(), DriveFile.MODE_WRITE_ONLY).continueWith {
+                val out = it.result.outputStream
+                val json = localNotes.joinToString(prefix = "[", postfix = "]", separator = ",") {
+                    (title, body) -> "{\"title\":\"$title\"}, \"body\":\"$body\""
+                }
+                out.write(json.toByteArray(charset("UTF-8")))
+            }
         }
     }
 
