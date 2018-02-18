@@ -12,6 +12,10 @@ import android.widget.*
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import java.util.*
+import android.support.v4.view.ViewCompat.setAlpha
+import android.support.v4.view.ViewCompat.animate
+
+
 
 const val CHANNEL_ID = "my_channel_01"
 const val CHANNEL_NAME = "nate channel"
@@ -58,15 +62,16 @@ class MainActivity : AppCompatActivity() {
 
         startActivityForResult(googleSignInClient.signInIntent, GOOGLE_AUTH_RESULT_CODE)
 
-        /*
         notesListView.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
-            val noteText = adapterView.getItemAtPosition(i) as? String ?: return@OnItemClickListener
+            //val noteText = adapterView.getItemAtPosition(i) as? String ?: return@OnItemClickListener
+            view.animate().setDuration(200).alpha(0F)
+                    .withEndAction {
+                        localNotes.removeAt(i)
+                        listAdapter.notifyDataSetChanged()
+                        view.setAlpha(1.0F)
+                    }
 
-            sendNotification(title = "You clicked a note",
-                             text = "It said \"$noteText\"",
-                             icon = android.R.drawable.ic_media_play)
         }
-        */
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
