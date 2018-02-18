@@ -39,6 +39,19 @@
 
 
 	<script src="index.js"></script>
+	<script type="text/javascript">
+	function renderButton() {
+	  gapi.signin2.render('g-signin2', {
+		'scope': 'profile email https://www.googleapis.com/auth/drive.appfolder	',
+	    'width': 240,
+	    'height': 50,
+	    'longtitle': true,
+		'theme': 'dark',
+		'onsuccess': onSuccess,
+		'onfailure': onFailure
+		});
+	}
+	</script>
 	 <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
 
 </body>
