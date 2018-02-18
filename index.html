@@ -88,76 +88,135 @@
         // });
 
 
+        // var fileId = '0BwwA4oUTeiV1UVNwOHItT0xfa2M';
+        // var dest = fs.createWriteStream('/tmp/photo.jpg');
+        // drive.files.get({
+        //   fileId: fileId,
+        //   alt: 'media'
+        // })
+        //     .on('end', function () {
+        //       console.log('Done');
+        //     })
+        //     .on('error', function (err) {
+        //       console.log('Error during download', err);
+        //     })
+        //     .pipe(dest);
 
-          var file_metadata = {
-            'title': 'My Report',
-            'mimeType': 'application/vnd.google-apps.spreadsheet'
+        //   readTextFile("file.txt");
+
+        //   var file_metadata = {
+        //     'title': 'My Report',
+        //     'mimeType': 'application/vnd.google-apps.spreadsheet'
+        //   };
+        //   var media = {
+        //     mimeType: 'text/csv',
+        //     body: "hdjdjdkh"
+        //   };
+
+        //   // var file_metadata = {
+        //   //   'name': 'config.json',
+        //   //   'parents': ['appDataFolder']
+        //   // };
+        //   // var media = {
+        //   //   mimeType: 'application/json',
+        //   //   body: "{}"
+        //   // };
+
+        //   //gapi.client.drive.files.create({});
+
+        //   console.log('This is okay!');
+
+        //   gapi.client.drive.files.create({
+        //     'resource': file_metadata,
+        //     'media': media,
+        //     'fields': 'id'
+        //   }).then(function(response) {
+
+        //     console.log(response);
+        //     // var files = response.result.files;
+        //     // if (files && files.length > 0) {
+        //     //   for (var i = 0; i < files.length; i++) {
+        //     //     var file = files[i];
+        //     //     console.log(file.name + ' (' + file.id + ')');
+        //     //   }
+        //     // } else {
+        //     //   console.log('No files found.');
+        //     // }
+
+        //     // gapi.client.drive.files.list({
+        //     // spaces: 'appDataFolder',
+        //     // fields: 'nextPageToken, files(id, name)',
+        //     // pageSize: 100
+        //     // }).then(function(response) {
+        //     // console.log(response);
+        //     // console.log(response.result.files);
+        //     //  });
+
+        //   gapi.client.drive.files.list({
+        //     'pageSize': 10,
+        //     'fields': "nextPageToken, files(id, name)"
+        //   }).then(function(response) {
+        //     console.log('Files:');
+        //     console.log(response);
+        //     console.log(files);
+        //     var files = response.result.files;
+        //     if (files && files.length > 0) {
+        //       for (var i = 0; i < files.length; i++) {
+        //         var file = files[i];
+        //         console.log(file.name + ' (' + file.id + ')');
+        //       }
+        //     } else {
+        //       console.log('No files found.');
+        //     }
+        //   });
+
+
+        //   });
+
+        insertFile("hihi.txt",console.log("wrong!"));
+    }
+
+    function insertFile(fileData, callback) {
+      const boundary = '-------314159265358979323846';
+      const delimiter = "\r\n--" + boundary + "\r\n";
+      const close_delim = "\r\n--" + boundary + "--";
+
+      var reader = new FileReader();
+      reader.readAsBinaryString(fileData);
+      reader.onload = function(e) {
+        var contentType = fileData.type || 'application/octet-stream';
+        var metadata = {
+          'title': fileData.fileName,
+          'mimeType': contentType
+        };
+
+        var base64Data = btoa(reader.result);
+        var multipartRequestBody =
+            delimiter +
+            'Content-Type: application/json\r\n\r\n' +
+            JSON.stringify(metadata) +
+            delimiter +
+            'Content-Type: ' + contentType + '\r\n' +
+            'Content-Transfer-Encoding: base64\r\n' +
+            '\r\n' +
+            base64Data +
+            close_delim;
+
+        var request = gapi.client.request({
+            'path': '/upload/drive/v2/files',
+            'method': 'POST',
+            'params': {'uploadType': 'multipart'},
+            'headers': {
+              'Content-Type': 'multipart/mixed; boundary="' + boundary + '"'
+            },
+            'body': multipartRequestBody});
+        if (!callback) {
+          callback = function(file) {
+            console.log(file)
           };
-          var media = {
-            mimeType: 'text/csv',
-            body: "hdjdjdkh"
-          };
-
-          // var file_metadata = {
-          //   'name': 'config.json',
-          //   'parents': ['appDataFolder']
-          // };
-          // var media = {
-          //   mimeType: 'application/json',
-          //   body: "{}"
-          // };
-
-          //gapi.client.drive.files.create({});
-
-          console.log('This is okay!');
-
-          gapi.client.drive.files.create({
-            'resource': file_metadata,
-            'media': media,
-            'fields': 'id'
-          }).then(function(response) {
-
-            console.log(response);
-            // var files = response.result.files;
-            // if (files && files.length > 0) {
-            //   for (var i = 0; i < files.length; i++) {
-            //     var file = files[i];
-            //     console.log(file.name + ' (' + file.id + ')');
-            //   }
-            // } else {
-            //   console.log('No files found.');
-            // }
-
-            // gapi.client.drive.files.list({
-            // spaces: 'appDataFolder',
-            // fields: 'nextPageToken, files(id, name)',
-            // pageSize: 100
-            // }).then(function(response) {
-            // console.log(response);
-            // console.log(response.result.files);
-            //  });
-
-          gapi.client.drive.files.list({
-            'pageSize': 10,
-            'fields': "nextPageToken, files(id, name)"
-          }).then(function(response) {
-            console.log('Files:');
-            console.log(response);
-            console.log(files);
-            var files = response.result.files;
-            if (files && files.length > 0) {
-              for (var i = 0; i < files.length; i++) {
-                var file = files[i];
-                console.log(file.name + ' (' + file.id + ')');
-              }
-            } else {
-              console.log('No files found.');
-            }
-          });
-
-
-          });
-
+        }
+        request.execute(callback);
+      }
     }
 
 
