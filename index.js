@@ -1,10 +1,15 @@
 var note_data_list = [];
+var signin = false;
 
 document.getElementById("addNote").addEventListener("click", function(){
-    var title = getValue("create_textbox_input");
-    if (title != ""){
-    	createTextField(title,"",-1);
-    }
+	if(signin){
+	    var title = getValue("create_textbox_input");
+	    if (title != ""){
+	    	createTextField(title,"",-1);
+	    }
+	}else{
+		alert("plz signin!!!!!!!!!!!!!!");
+	}
 });
 
 // document.getElementById("popup_submit").addEventListener("click", function(){
@@ -127,6 +132,9 @@ function onSignIn(googleUser) {
   console.log('Name: ' + profile.getName());
   console.log('Image URL: ' + profile.getImageUrl());
   console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+  if (profile.getId() != null && profile.getName() != null){
+  	signin = true;
+  }
 }
 
 
