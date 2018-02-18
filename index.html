@@ -12,8 +12,26 @@
 	<div id="title" class="header">
 
       <div id = "signin" class="g-signin2"></div>
-        
-        <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+        <script>
+	    function onSuccess(googleUser) {
+    	  console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
+	    }
+    	function onFailure(error) {
+     	  console.log(error);
+    	}
+	    function renderButton() {
+    	  gapi.signin2.render('g-signin2', {
+        	'scope': 'profile email https://www.googleapis.com/auth/drive',
+	        'width': 240,
+	        'height': 50,
+    	    'longtitle': true,
+        	'theme': 'dark',
+        	'onsuccess': onSuccess,
+        	'onfailure': onFailure
+      	});
+    }
+  </script>
+
 
 	  <h2 style="margin:5px">Notes</h2>
 	  <input type="text" id="create_textbox_input" placeholder="Title...">
@@ -40,5 +58,7 @@
 
 
 	<script src="index.js"></script>
+	 <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+
 </body>
 </html>
