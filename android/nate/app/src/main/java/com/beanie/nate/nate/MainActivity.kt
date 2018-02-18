@@ -1,9 +1,6 @@
 package com.beanie.nate.nate
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
@@ -21,6 +18,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var addNoteButton : Button
     private lateinit var notificationChannel : NotificationChannel
     private lateinit var notificationManager : NotificationManager
+    private lateinit var listAdapter : ArrayAdapter<String>
 
     private val localNotes = mutableListOf<String>()
 
@@ -35,15 +33,16 @@ class MainActivity : AppCompatActivity() {
         addNoteButton = findViewById(R.id.add_note)
         addNoteButton.setOnClickListener { view ->
             val intent = Intent(this, NewNoteActivity::class.java)
-            startActivity(intent)
+            startActivityForResult(intent, 1)
         }
 
         notificationChannel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, CHANNEL_IMPORTANCE)
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(notificationChannel)
 
-        val listAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, localNotes)
+        listAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, localNotes)
         notesListView.adapter = listAdapter
+        /*
         notesListView.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
             val noteText = adapterView.getItemAtPosition(i) as? String ?: return@OnItemClickListener
 
@@ -51,6 +50,7 @@ class MainActivity : AppCompatActivity() {
                              text = "It said \"$noteText\"",
                              icon = android.R.drawable.ic_media_play)
         }
+        */
     }
 
     private fun sendNotification(title : String, text : String, icon : Int,
@@ -64,5 +64,14 @@ class MainActivity : AppCompatActivity() {
         intent?.let { builder.setContentIntent(it) }
         val notification = builder.build()
         notificationManager.notify(notifyID, notification)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+        if (requestCode == 1){
+            if (resultCode == Activity.RESULT_OK) {
+                localNotes.add(data.dataString)
+                listAdapter.notifyDataSetChanged()
+            }
+        }
     }
 }
