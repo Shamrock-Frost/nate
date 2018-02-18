@@ -130,9 +130,11 @@ function addData(title, content){
 function onSuccess(googleUser) {
   console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
 }
+
 function onFailure(error) {
 	  console.log(error);
 }
+
 function renderButton() {
   gapi.signin2.render('signin', {
 	'scope': 'profile email https://www.googleapis.com/auth/drive',
@@ -144,7 +146,7 @@ function renderButton() {
 	'onfailure': onFailure
 	});
 }
-
+renderButton();
 // function onFailure(error) {
 //   console.log(error);
 // }
