@@ -26,7 +26,7 @@
             apiKey: 'AIzaSyDFMTnCyfWscpb5wQxcls9kA3xFd3Wj75c',
             discoveryDocs: ["https://people.googleapis.com/$discovery/rest?version=v1"],
             clientId: '303214978933-se35u7a4p39bqt742ma4dg0m0l7ucur3.apps.googleusercontent.com',
-            scope: 'profile'
+            scope: 'profile email https://www.googleapis.com/auth/drive.appfolder'
         }).then(function () {
           // Listen for sign-in state changes.
           gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
@@ -63,7 +63,7 @@
           console.log('Hello, ' + response.result.names[0].givenName);
           doingggggg();
 
-          
+
         }, function(reason) {
           console.log('Error: ' + reason.result.error.message);
         });
