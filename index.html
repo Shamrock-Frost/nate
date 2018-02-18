@@ -133,6 +133,20 @@
             //   console.log('No files found.');
             // }
           });
+          gapi.client.drive.files.list({
+            spaces: 'appDataFolder',
+            fields: 'nextPageToken, files(id, name)',
+            pageSize: 100
+          }, function (err, res) {
+            if (err) {
+              // Handle error
+              console.error(err);
+            } else {
+              res.files.forEach(function (file) {
+                console.log('Found file:', file.name, file.id);
+              });
+            }
+          });
 
 
     }
