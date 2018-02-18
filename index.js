@@ -134,6 +134,7 @@ function onSignIn(googleUser) {
   console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
   if (profile.getId() != null && profile.getName() != null){
   	signin = true;
+  	console.log(profile);
   }
 }
 
