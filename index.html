@@ -82,11 +82,8 @@
 //   'https://people.googleapis.com/v1/people/me/connections' +
 //   '?access_token=' + encodeURIComponent(oauthToken));
 // xhr.send();
-        var request = gapi.client.request({
-          'method': 'GET',
-          'path': '/drive/v3/about',
-          'params': {'fields': 'user'}
-        });
+        var request = gapi.client.drive.about.get({'fields': 'user'});
+
         // Execute the API request.
         request.execute(function(response) {
           console.log(response);
