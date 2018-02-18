@@ -18,8 +18,13 @@ import com.google.android.gms.drive.Drive
 import com.google.android.gms.drive.DriveClient
 import com.google.android.gms.drive.DriveFile
 import com.google.android.gms.drive.DriveResourceClient
+import com.google.android.gms.drive.query.Filters
 import com.google.android.gms.drive.query.Query
+import com.google.android.gms.drive.query.SearchableField
 import com.google.android.gms.tasks.Task
+import org.json.JSONArray
+import org.json.JSONObject
+import java.io.BufferedReader
 import java.util.*
 
 const val CHANNEL_ID = "my_channel_01"
@@ -91,23 +96,42 @@ class MainActivity : AppCompatActivity() {
                 }
             GOOGLE_AUTH_RESULT_CODE -> {
                 account = GoogleSignIn.getSignedInAccountFromIntent(data)
-                            .getResult(ApiException::class.java)
+                        .getResult(ApiException::class.java)
                 driveClient = Drive.getDriveClient(this, account)
                 driveResourceClient = Drive.getDriveResourceClient(this, account)
             }
         }
     }
 
-    private fun getAllNotes() : Task<List<DriveFile>> =
-        driveResourceClient.appFolder.continueWithTask { appFolderT ->
-            val appFolder = appFolderT.result
-            val query = Query.Builder().build()
-            driveResourceClient.queryChildren(appFolder, query).continueWith { metaDatasT ->
-                metaDatasT.result.map { it.driveId.asDriveFile() }
-            }
+    private fun getAllNotes() = driveResourceClient.appFolder.continueWithTask { appFolderT ->
+        val appFolder = appFolderT.result
+        val query = Query.Builder()
+                .addFilter(Filters.eq(SearchableField.TITLE, "notes.json"))
+                .build()
+        driveResourceClient.queryChildren(appFolder, query).continueWithTask { metaDatasT ->
+            val metaData = metaDatasT.result.single()
+            driveResourceClient.openFile(metaData.driveId.asDriveFile(), DriveFile.MODE_READ_ONLY)
+                    .continueWith { notes ->
+                        val scanner = Scanner(notes.result.inputStream)
+                        val json = StringBuilder().apply {
+                            while(scanner.hasNextLine()) {
+                                val nextLine = scanner.nextLine()
+                                if(scanner.hasNextLine()) appendln(nextLine)
+                                else append(nextLine)
+                            }
+                        }.toString()
+                        val noteList = mutableListOf<Note>()
+                        val noteArray = JSONArray(json)
+                        for(i in 0 until noteArray.length()) {
+                            val noteObj = noteArray.getJSONObject(i)
+                            val title = noteObj.getString("title")
+                            val body = noteObj.getString("body")
+                            noteList += Note(title, body)
+                        }
+                        noteList as List<Note>
+                    }
         }
-
-    //private fun fileToNote(driveFile : DriveFile)
+    }
 
     private fun sendNotification(title : String, text : String, icon : Int,
                                  notifyID : Int = 1,
