@@ -137,18 +137,9 @@
             fields: 'nextPageToken, files(id, name)',
             pageSize: 100
             }).then(function(response) {
-            console.log('Files:');
-            console.log(response);
-            console.log(files);
-            var files = response.result.files;
-            if (files && files.length > 0) {
-              for (var i = 0; i < files.length; i++) {
-                var file = files[i];
-                console.log(file.name + ' (' + file.id + ')');
-              }
-            } else {
-              console.log('No files found.');
-            }
+            response.forEach(function (file) {
+              console.log('Found file:', file.name, file.id);
+            });
           });
           });
 
