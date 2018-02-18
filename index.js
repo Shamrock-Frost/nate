@@ -126,25 +126,9 @@ function addData(title, content){
 	note_data_list.push(data);
 }
 
-function init() {
-  gapi.load('auth2', function() {  });
-}
-init();
-
 function onSignIn(googleUser) {
+  console.log(googleUser);
   var profile = googleUser.getBasicProfile();
-  var options = new gapi.auth2.SigninOptionsBuilder(
-        {'scope': 'email https://www.googleapis.com/auth/drive'});
-
-	googleUser = auth2.currentUser.get();
-	googleUser.grant(options).then(
-    function(success){
-      console.log(JSON.stringify({message: "success", value: success}));
-    },
-    function(fail){
-      alert(JSON.stringify({message: "fail", value: fail}));
-    });
-
 
   console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
   console.log('Name: ' + profile.getName());
