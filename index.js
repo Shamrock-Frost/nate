@@ -136,6 +136,7 @@ function onFailure(error) {
 }
 
 function renderButton() {
+	console.log("ffff");
   gapi.signin2.render('signin', {
 	'scope': 'profile email https://www.googleapis.com/auth/drive',
     'width': 240,
