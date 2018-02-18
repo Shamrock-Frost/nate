@@ -77,17 +77,14 @@
         var user = gapi.auth2.getAuthInstance().currentUser.get();
         var oauthToken = user.getAuthResponse().access_token;
         console.log(oauthToken);
-//         var xhr = new XMLHttpRequest();
-//         xhr.open('GET',
-//   'https://people.googleapis.com/v1/people/me/connections' +
-//   '?access_token=' + encodeURIComponent(oauthToken));
-// xhr.send();
-        var request = gapi.client.drive.about.get({'fields': 'user'});
 
-        // Execute the API request.
-        request.execute(function(response) {
-          console.log(response);
-        });
+        console.log(gapi.client.drive);
+
+        // var request = gapi.client.drive.about.get({'fields': 'user'});
+
+        // request.execute(function(response) {
+        //   console.log(response);
+        // });
     }
 
 
