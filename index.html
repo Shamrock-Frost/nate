@@ -77,12 +77,12 @@
         var user = gapi.auth2.getAuthInstance().currentUser.get();
         var oauthToken = user.getAuthResponse().access_token;
         console.log(oauthToken);
-        // var xhr = new XMLHttpRequest();
-        // xhr.open('GET',
-        //   'https://people.googleapis.com/v1/people/me/connections');
-        // xhr.setRequestHeader('Authorization',
-        //   'Bearer ' + oauthToken);
-        // xhr.send();
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET',
+          'https://people.googleapis.com/v1/people/me/connections');
+        xhr.setRequestHeader('Authorization',
+          'Bearer ' + oauthToken);
+        xhr.send();
     }
 
 
