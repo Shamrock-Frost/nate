@@ -10,14 +10,17 @@ import android.support.v4.app.NotificationCompat
 import android.view.View
 import android.widget.*
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.Scope
-import com.google.api.services.drive.Drive
+import com.google.android.gms.drive.Drive
+import com.google.android.gms.drive.DriveClient
+import com.google.android.gms.drive.DriveFile
+import com.google.android.gms.drive.DriveResourceClient
+import com.google.android.gms.drive.query.Query
+import com.google.android.gms.tasks.Task
 import java.util.*
-import android.support.v4.view.ViewCompat.setAlpha
-import android.support.v4.view.ViewCompat.animate
-
-
 
 const val CHANNEL_ID = "my_channel_01"
 const val CHANNEL_NAME = "nate channel"
@@ -32,6 +35,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var notificationChannel : NotificationChannel
     private lateinit var notificationManager : NotificationManager
     private lateinit var listAdapter : ArrayAdapter<String>
+    private lateinit var account : GoogleSignInAccount
+    private lateinit var driveClient : DriveClient
+    private lateinit var driveResourceClient : DriveResourceClient
 
     private val localNotes = mutableListOf<String>()
 
@@ -57,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         notesListView.adapter = listAdapter
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestScopes(Scope("https://www.googleapis.com/auth/drive.appfolder"))
+                .requestScopes(Drive.SCOPE_APPFOLDER)
                 .build()
 
         val googleSignInClient = GoogleSignIn.getClient(this, gso)
@@ -83,12 +89,25 @@ class MainActivity : AppCompatActivity() {
                     localNotes.add(data.dataString)
                     listAdapter.notifyDataSetChanged()
                 }
-            GOOGLE_AUTH_RESULT_CODE ->
-                if (resultCode == Activity.RESULT_OK) {
-                    println("it did good!")
-                }
+            GOOGLE_AUTH_RESULT_CODE -> {
+                account = GoogleSignIn.getSignedInAccountFromIntent(data)
+                            .getResult(ApiException::class.java)
+                driveClient = Drive.getDriveClient(this, account)
+                driveResourceClient = Drive.getDriveResourceClient(this, account)
+            }
         }
     }
+
+    private fun getAllNotes() : Task<List<DriveFile>> =
+        driveResourceClient.appFolder.continueWithTask { appFolderT ->
+            val appFolder = appFolderT.result
+            val query = Query.Builder().build()
+            driveResourceClient.queryChildren(appFolder, query).continueWith { metaDatasT ->
+                metaDatasT.result.map { it.driveId.asDriveFile() }
+            }
+        }
+
+    //private fun fileToNote(driveFile : DriveFile)
 
     private fun sendNotification(title : String, text : String, icon : Int,
                                  notifyID : Int = 1,
