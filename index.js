@@ -126,7 +126,22 @@ function addData(title, content){
 	note_data_list.push(data);
 }
 
-function onSignIn(googleUser) {
+function onFailure(error) {
+	  console.log(error);
+}
+function renderButton() {
+  gapi.signin2.render('g-signin2', {
+	'scope': 'profile email https://www.googleapis.com/auth/drive',
+    'width': 240,
+    'height': 50,
+    'longtitle': true,
+	'theme': 'dark',
+	'onsuccess': onSuccess,
+	'onfailure': onFailure
+	});
+}
+
+function onSuccess(googleUser) {
   console.log(googleUser);
   var profile = googleUser.getBasicProfile();
 
