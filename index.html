@@ -40,7 +40,22 @@
 		<textarea id = "content_input" type="text" placeholder="Type notes..."></textarea>
 	</div>
 
-     <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+<script type="text/javascript">
+	function renderButton() {
+	console.log("ffff");
+  gapi.signin2.render('signin', {
+	'scope': 'profile email https://www.googleapis.com/auth/drive',
+    'width': 240,
+    'height': 50,
+    'longtitle': true,
+	'theme': 'dark',
+	'onsuccess': onSuccess,
+	'onfailure': onFailure
+	});
+}
+</script>>
+     <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
 
 
 </body>

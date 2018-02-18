@@ -135,19 +135,8 @@ function onFailure(error) {
 	  console.log(error);
 }
 
-function renderButton() {
-	console.log("ffff");
-  gapi.signin2.render('signin', {
-	'scope': 'profile email https://www.googleapis.com/auth/drive',
-    'width': 240,
-    'height': 50,
-    'longtitle': true,
-	'theme': 'dark',
-	'onsuccess': onSuccess,
-	'onfailure': onFailure
-	});
-}
-renderButton();
+
+
 // function onFailure(error) {
 //   console.log(error);
 // }
