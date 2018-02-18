@@ -94,8 +94,8 @@
             'parents': ['appDataFolder']
           };
           var media = {
-            mimeType: 'application/json',
-            body: "ddddd"
+            mimeType: 'application/vnd.google-apps.file',
+            body: "{}"
           };
 
           //gapi.client.drive.files.create({});
@@ -109,32 +109,6 @@
           }).then(function(response) {
 
             console.log(response);
-            // var files = response.result.files;
-            // if (files && files.length > 0) {
-            //   for (var i = 0; i < files.length; i++) {
-            //     var file = files[i];
-            //     console.log(file.name + ' (' + file.id + ')');
-            //   }
-            // } else {
-            //   console.log('No files found.');
-            // }
-
-            // gapi.client.drive.files.list({
-            // spaces: 'appDataFolder',
-            // fields: 'nextPageToken, files(id, name)',
-            // pageSize: 100
-            // }).then(function(response) {
-            // console.log(response);
-            // console.log(response.result.files);
-            //  });
-
-          gapi.client.drive.files.list({
-            'pageSize': 10,
-            'fields': "nextPageToken, files(id, name)"
-          }).then(function(response) {
-            console.log('Files:');
-            console.log(response);
-            console.log(files);
             var files = response.result.files;
             if (files && files.length > 0) {
               for (var i = 0; i < files.length; i++) {
@@ -144,10 +118,17 @@
             } else {
               console.log('No files found.');
             }
-          });
 
+            gapi.client.drive.files.list({
+            spaces: 'appDataFolder',
+            fields: 'nextPageToken, files(id, name)',
+            pageSize: 100
+            }).then(function(response) {
+            console.log(response);
+            console.log(response.result.files);
+             });
 
-          });
+          }).execute();
 
     }
 
