@@ -126,6 +126,11 @@ function addData(title, content){
 	note_data_list.push(data);
 }
 
+function init() {
+  gapi.load('auth2', function() {  });
+}
+init();
+
 function onSignIn(googleUser) {
   var profile = googleUser.getBasicProfile();
   var options = new gapi.auth2.SigninOptionsBuilder(
