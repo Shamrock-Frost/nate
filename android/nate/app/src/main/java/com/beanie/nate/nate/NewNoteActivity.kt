@@ -1,5 +1,9 @@
 package com.beanie.nate.nate
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -15,7 +19,25 @@ class NewNoteActivity : AppCompatActivity() {
         setContentView(R.layout.activity_new_note)
 
         noteText = findViewById(R.id.note_text)
+
         confirm = findViewById(R.id.confirm)
+        confirm.setOnClickListener {
+            val data = Intent()
+
+            data.setData(Uri.parse(noteText.getText().toString()))
+            setResult(Activity.RESULT_OK, data)
+
+            finish()
+        }
+
         cancel = findViewById(R.id.cancel)
+        cancel.setOnClickListener {
+            val data = Intent()
+
+            data.setData(Uri.parse("fail"))
+            setResult(Activity.RESULT_CANCELED, data)
+
+            finish()
+        }
     }
 }
