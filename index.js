@@ -23,7 +23,7 @@ function add (input_value){
 
 	var li = document.createElement("li");
 	var ul = document.getElementById("myUL");
-	var tmp = document.createTextNode(input_value);
+	// var tmp = document.createTextNode(" ");
 	var div = document.createElement("div");
 	var popup = document.getElementsByClassName("popup");
 	div.className = "popup";
@@ -32,6 +32,7 @@ function add (input_value){
 	// div.style.height =  "100%";
 
 	// add inputvalue into li
+	// li.appendChild(tmp);
 	li.appendChild(div);
 	// add li to popup.html
 	ul.appendChild(li);
