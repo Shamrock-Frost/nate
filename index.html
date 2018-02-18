@@ -87,23 +87,54 @@
         //   console.log(response);
         // });
 
-          gapi.client.drive.files.list({
-            'pageSize': 10,
-            'fields': "nextPageToken, files(id, name)"
+          // gapi.client.drive.files.list({
+          //   'pageSize': 10,
+          //   'fields': "nextPageToken, files(id, name)"
+          // }).then(function(response) {
+          //   console.log('Files:');
+          //   console.log(response);
+          //   console.log(files);
+          //   var files = response.result.files;
+          //   if (files && files.length > 0) {
+          //     for (var i = 0; i < files.length; i++) {
+          //       var file = files[i];
+          //       console.log(file.name + ' (' + file.id + ')');
+          //     }
+          //   } else {
+          //     console.log('No files found.');
+          //   }
+          // });
+
+          var fileMetadata = {
+            'name': 'config.json',
+            'parents': ['appDataFolder']
+          };
+          var media = {
+            mimeType: 'application/json',
+            body: fs.createReadStream('files/config.json')
+          };
+
+          //gapi.client.drive.files.create({});
+
+          gapi.client.drive.files.create({
+            'resource': file_metadata,
+            'media': media,
+            'fields': 'id'
           }).then(function(response) {
-            console.log('Files:');
+
             console.log(response);
-            console.log(files);
-            var files = response.result.files;
-            if (files && files.length > 0) {
-              for (var i = 0; i < files.length; i++) {
-                var file = files[i];
-                console.log(file.name + ' (' + file.id + ')');
-              }
-            } else {
-              console.log('No files found.');
-            }
+            // var files = response.result.files;
+            // if (files && files.length > 0) {
+            //   for (var i = 0; i < files.length; i++) {
+            //     var file = files[i];
+            //     console.log(file.name + ' (' + file.id + ')');
+            //   }
+            // } else {
+            //   console.log('No files found.');
+            // }
           });
+
+
     }
 
 
