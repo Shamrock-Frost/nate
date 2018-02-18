@@ -79,10 +79,9 @@
         console.log(oauthToken);
         var xhr = new XMLHttpRequest();
         xhr.open('GET',
-          'https://people.googleapis.com/v1/people/me/connections');
-        xhr.setRequestHeader('Authorization',
-          'Bearer ' + oauthToken);
-        xhr.send();
+  'https://people.googleapis.com/v1/people/me/connections' +
+  '?access_token=' + encodeURIComponent(oauthToken));
+xhr.send();
     }
 
 
