@@ -18,16 +18,14 @@
         </activity>
 
         <service
-            android:name="com.beanie.nate.nate.QuickAddNote"
+            android:name=".QuickAddNote"
             android:icon="@drawable/ic_note_add_black_24dp"
             android:label="@string/tile_name"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action
-                    android:name="android.serovice.quicksettings.action.QS_TILE"/>
+                    android:name="android.service.quicksettings.action.QS_TILE"/>
             </intent-filter>
         </service>
     </application>
-
-
 </manifest>

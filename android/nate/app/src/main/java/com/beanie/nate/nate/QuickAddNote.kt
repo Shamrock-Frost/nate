@@ -14,6 +14,10 @@ public class QuickAddNote : TileService() {
         super.onClick()
 
         // Called when the user click the tile
+        val calendarIntent = Intent(Intent.ACTION_EDIT)
+        calendarIntent.type = "vnd.android.cursor.item/event"
+
+        startActivityAndCollapse(calendarIntent)
     }
 
     override fun onTileRemoved() {
