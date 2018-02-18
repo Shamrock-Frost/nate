@@ -16,6 +16,7 @@
         // Loading the auth2 library is optional here since `gapi.client.init` function will load
         // it if not already loaded. Loading it upfront can save one network request.
         gapi.load('client:auth2', initClient);
+
       }
 
       function initClient() {
@@ -60,22 +61,27 @@
           'requestMask.includeField': 'person.names'
         }).then(function(response) {
           console.log('Hello, ' + response.result.names[0].givenName);
+          doingggggg();
+
+          
         }, function(reason) {
           console.log('Error: ' + reason.result.error.message);
         });
       }
+      function doingggggg(){
 
-      gapi.load('auth2', function() {
-      // Library loaded.
-      });
-      var user = gapi.auth2.getAuthInstance().currentUser.get();
-      var oauthToken = user.getAuthResponse().access_token;
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET',
-        'https://people.googleapis.com/v1/people/me/connections');
-      xhr.setRequestHeader('Authorization',
-        'Bearer ' + oauthToken);
-      xhr.send();
+        gapi.load('auth2', function() {
+        // Library loaded.
+        });
+        var user = gapi.auth2.getAuthInstance().currentUser.get();
+        var oauthToken = user.getAuthResponse().access_token;
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET',
+          'https://people.googleapis.com/v1/people/me/connections');
+        xhr.setRequestHeader('Authorization',
+          'Bearer ' + oauthToken);
+        xhr.send();
+    }
 
 
     </script>
