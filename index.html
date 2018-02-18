@@ -137,9 +137,10 @@
             fields: 'nextPageToken, files(id, name)',
             pageSize: 100
             }).then(function(response) {
-            response.files.forEach(function (file) {
-              console.log('Found file:', file.name, file.id);
-            });
+            console.log(response);
+            console.log(response.files);
+
+          
           });
           });
 
