@@ -68,15 +68,17 @@ class MainActivity : AppCompatActivity() {
         */
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when(requestCode) {
-            NEW_NOTE_RESULT_CODE -> if (resultCode == Activity.RESULT_OK) {
-                localNotes.add(data.dataString)
-                listAdapter.notifyDataSetChanged()
-            }
-            GOOGLE_AUTH_RESULT_CODE -> if (resultCode == Activity.RESULT_OK) {
-                println("it did good!")
-            }
+            NEW_NOTE_RESULT_CODE ->
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    localNotes.add(data.dataString)
+                    listAdapter.notifyDataSetChanged()
+                }
+            GOOGLE_AUTH_RESULT_CODE ->
+                if (resultCode == Activity.RESULT_OK) {
+                    println("it did good!")
+                }
         }
     }
 
