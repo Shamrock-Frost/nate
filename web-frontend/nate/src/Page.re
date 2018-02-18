@@ -4,13 +4,18 @@ type item = {
   body: string,
 };
 
-type state = {
-  items: list(item)
-};
 
 type action =
   | AddItem(string, string)
-  | EditItem(int);
+  | UpdateItem(int, string, string)
+  | StartEditItem(int);
+
+type state = {
+  showGuy: bool,
+  guyAction: action,
+  /*onSave: (string, string) =>*/
+  items: list(item)
+};
 
 let lastId = ref(0);
 
@@ -57,21 +62,41 @@ let thing = (_) => Js.log("thing");
 let make = (~message, _children) => {
   ...component,
   initialState: () => {
+    guyAction: AddItem("",""),
+    showGuy: false,
+    /*onSave: ((title, text) => send(AddItem(title, text))),*/
     items: [ {id: 0, title: "first note", body: "this is the body for the first note"} ]
   },
   reducer: (action, state) => {
+    Js.log(state.guyAction);
     switch action {
-      | AddItem(title, body) => ReasonReact.Update({items: [newItem(title, body), ...state.items]})
-      | EditItem(id) => ReasonReact.UpdateWithSideEffects(state, (e_)=>Js.log("stst"));
+      | AddItem(title, body) => ReasonReact.Update({...state, guyAction: action, showGuy: false, items: [newItem(title, body), ...state.items]})
+      | StartEditItem(id) => ReasonReact.Update({...state, guyAction: action, showGuy: true})
+      | UpdateItem(id, title, body) => ReasonReact.Update({...state, guyAction: action})
     }
   },
-  render: ({state: {items}, send, handle}) =>
+  render: ({state: {items, showGuy, guyAction}, send, handle}) =>
     <div className="top">
         <div onClick=(handle(handleClick))> (str(message)) </div>
         <div className="items">
-            (List.map((item) => <DisplayItem onClick=((e_)=>send(EditItem(item.id))) key=(string_of_int(item.id)) item />, items) |> Array.of_list |> ReasonReact.arrayToElement)
+    (List.map((item) => <DisplayItem
+                         onClick=((e_)=>send(StartEditItem(item.id)))
+                         key=(string_of_int(item.id)) item />, items)
+     |> Array.of_list |> ReasonReact.arrayToElement)
         </div>
-    <Modal body="" title="" onSave=((title, text) => send(AddItem(title, text)))/>
+    <button onClick=((_)=> {send(StartEditItem(0));
+                            Js.log("sssssssss");
+    })>(str("add new task"))</button>
+    (switch guyAction {
+      | AddItem(_, _) => <Modal body="" title="" show=showGuy onSave=((title, text) => send(AddItem(title, text)))/>
+      | StartEditItem(id) => <Modal body="">
+
+    })
+
+    /* idea: have the current function passed in to modal as a reference to a function in page state
+     then change that functino depending on new or edit.
+   */
     </div>
+
 };
 
