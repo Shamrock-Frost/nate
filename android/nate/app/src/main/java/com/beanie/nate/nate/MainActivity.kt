@@ -14,17 +14,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.Scope
-import com.google.android.gms.drive.Drive
-import com.google.android.gms.drive.DriveClient
-import com.google.android.gms.drive.DriveFile
-import com.google.android.gms.drive.DriveResourceClient
+import com.google.android.gms.drive.*
 import com.google.android.gms.drive.query.Filters
 import com.google.android.gms.drive.query.Query
 import com.google.android.gms.drive.query.SearchableField
 import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedReader
+import java.io.OutputStreamWriter
 import java.util.*
 
 const val CHANNEL_ID = "my_channel_01"
@@ -81,9 +80,8 @@ class MainActivity : AppCompatActivity() {
                     .withEndAction {
                         localNotes.removeAt(i)
                         listAdapter.notifyDataSetChanged()
-                        view.setAlpha(1.0F)
+                        view.alpha = 1.0F
                     }
-
         }
     }
 
@@ -99,6 +97,28 @@ class MainActivity : AppCompatActivity() {
                         .getResult(ApiException::class.java)
                 driveClient = Drive.getDriveClient(this, account)
                 driveResourceClient = Drive.getDriveResourceClient(this, account)
+                val appFolderTask = driveResourceClient.appFolder
+                val createContentsTask = driveResourceClient.createContents()
+                Tasks.whenAll(appFolderTask, createContentsTask).continueWithTask {
+                    val appFolder = appFolderTask.result
+                    val query = Query.Builder()
+                            .addFilter(Filters.eq(SearchableField.TITLE, "notes.json"))
+                            .build()
+                    val changeSet = MetadataChangeSet.Builder()
+                            .setTitle("notes.json")
+                            .setMimeType("application/json")
+                            .build()
+                    val contents = createContentsTask.result
+                    OutputStreamWriter(contents.outputStream).use { writer ->
+                        writer.write("[]")
+                    }
+                    driveResourceClient.queryChildren(appFolder, query).continueWith { metaDatasT ->
+                        if(metaDatasT.result.count == 0) {
+                            driveResourceClient.createFile(appFolder, changeSet, contents)
+                        }
+                    }
+                }
+
             }
         }
     }
