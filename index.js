@@ -130,17 +130,7 @@ function onFailure(error) {
   console.log(error);
 }
 
-function renderButton() {
-  gapi.signin2.render('g-signin2', {
-	'scope': 'profile email https://www.googleapis.com/auth/drive.appfolder	',
-    'width': 240,
-    'height': 50,
-    'longtitle': true,
-	'theme': 'dark',
-	'onsuccess': onSuccess,
-	'onfailure': onFailure
-	});
-}
+
 function onSuccess(googleUser) {
 
   console.log(googleUser);
