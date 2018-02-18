@@ -8,24 +8,23 @@
 
     <ListView
         android:id="@+id/notes_list"
-        android:layout_width="368dp"
-        android:layout_height="431dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:foregroundGravity="top"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_note"
-        app:layout_constraintVertical_bias="0.737" />
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/add_note"
-        android:layout_width="347dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add a note"
-        app:layout_constraintBottom_toTopOf="@+id/notes_list"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:clickable="true"
+        app:fabSize="normal"
+        app:srcCompat="@drawable/ic_add_black_24dp"
+        app:useCompatPadding="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
 </android.support.constraint.ConstraintLayout>
