@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="index.css">
+  <title>Nate!!!!!</title>
+  <meta name="google-signin-client_id" content="303214978933-qmqijqrsrb1kpbjidtc7msuougdn9fik.apps.googleusercontent.com">
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+
+</head>
+<body>
+
+
+	<div id="title" class="header">
+
+      <div id = "signin" class="g-signin2" data-onsuccess="onSignIn"></div>
+
+	  <h2 style="margin:5px">Notes</h2>
+	  <input type="text" id="create_textbox_input" placeholder="Title...">
+	  <span id = "addNote" class="addBtn">Add</span>
+	</div>
+  
+<!-- 	<input id = "create_textbox_input" type="text">
+	<br>
+	<button id = "addNote"> Add Note</button> -->
+	<ul id="myUL"></ul>
+
+	<div id="overlay"></div>
+<!-- 	<h1> Write your note </h1> -->
+	<div id = "popup_upper">
+		<h1 id = "popup_title"></h1>
+		<span id = "popup_submit" class="addBtn">Submit</span>
+
+	</div>
+	<div id="popup">
+
+		<textarea id = "content_input" type="text" placeholder="Type notes..."></textarea>
+	</div>
+
+
+
+	<script src="index.js"></script>
+</body>
+</html>
